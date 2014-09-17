@@ -1,0 +1,51 @@
+<html>
+  <head>
+    <style>
+      @-webkit-keyframes rotatec {
+        from {-webkit-transform: rotate(0deg) translate(10px, 0);}
+        to {-webkit-transform: rotate(360deg) translate(10px, 0);}
+      }
+      @keyframes rotatec {
+        from {transform: rotate(0deg) translate(10px, 0);}
+        to {transform: rotate(360deg) translate(10px, 0);}
+      }
+      @-webkit-keyframes rotatecc {
+        from {-webkit-transform: rotate(0deg) translate(10px, 0);}
+        to {-webkit-transform: rotate(360deg) translate(10px, 0);}
+      }
+      @keyframes rotatecc {
+        from {transform: rotate(3600deg) translate(10px, 0);}
+        to {transform: rotate(0deg) translate(10px, 0);}
+      }
+      html, body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+
+      img {
+        position: absolute;
+        width: 2000px;
+        height: 2000px;
+        top: 50%;
+        left: 50%;
+        margin-top: -1000px;
+        margin-left: -1000px;
+      }
+
+      img:nth-child(1) {
+        -webkit-animation: rotatecc 10s infinite linear;
+        animation: rotatecc 10s infinite linear;
+      }
+      img:nth-child(2) {
+        -webkit-animation: rotatec 20s infinite linear;
+        animation: rotatec 20s infinite linear;
+      }
+    </style>
+  </head>
+  <body>
+    <img src="../assets/red-burst.svg">
+    <img src="../assets/yellow-burst.svg">
+  </body>
+</html>
