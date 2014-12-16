@@ -23,6 +23,7 @@
 </head>
 <body>
   <div>
+    <h3>Settings</h3>
     <p>
       <label for="f">Focal Length</label>
       <input name="f" type="range" max="100" min="1" value="25" step="1">
@@ -45,6 +46,7 @@
     </p>
   </div>
   <div>
+    <h3>Maths</h3>
     <p>
       N = 2<sup>i/2</sup> = 2<sup><span data-v="i"></span>/2</sup> = <span data-v="N"></span>
     </p>
@@ -64,7 +66,10 @@
       &Delta;D = D<sub>far</sub> - D<sub>near</sub> = <span data-v="Df"></span> - <span data-v="Dn"></span> = <strong><span data-v="dD"></span>mm</strong>
     </p>
   </div>
-  <canvas width="1000" height="200"></canvas>
+  <div>
+    <h3>Visualization</h3>
+    <canvas width="1000" height="200"></canvas>
+  </div>
   <script>
     var canvas = document.querySelector('canvas');
 
@@ -76,7 +81,7 @@
     }
 
     function calculateH (f, N, c) {
-      return (f*f)/(N*c) + f;
+      return (f*f)/(N*c);
     }
 
     function calculateDNear (s, H, f) {
@@ -84,6 +89,9 @@
     }
 
     function calculateDFar (s, H, f) {
+      if (s >= H) {
+        console.log('warning: s >= H');
+      }
       return (s * (H - f)) /  (H - s);
     }
 
@@ -132,7 +140,8 @@
       ctx.lineTo(Df, canvas.height);
       ctx.closePath();
 
-      ctx.stroke();    }
+      ctx.stroke();
+    }
 
     function populate () {
       var f = inputs.f.value;
@@ -161,7 +170,8 @@
       var ctx = canvas.getContext('2d');
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      drawDoFRect(Df, Dn);
+      // Fix Dn and Df values if they're wonky
+      drawDoFRect(Math.max(Df, Dn), Dn);
       drawApertureRect(P, f);
     }
 
@@ -171,5 +181,14 @@
 
     populate();
   </script>
+  <div>
+    <h5>References</h5>
+    <ol>
+      <li><em><a href="http://www.cambridgeincolour.com/tutorials/depth-of-field.htm">Depth of Field Tutorial</a></em></li>
+      <li><em><a href="http://en.wikipedia.org/wiki/Depth_of_field">Depth of Field (Wikipedia)</a></em></li>
+      <li><em><a href="http://www.dofmaster.com/equations.html">Depth of Field Equations</a></em></li>
+      <li><em><a href="http://en.wikipedia.org/wiki/F-number">F-number (Wikipedia)</a></em></li>
+    </ol>
+  </div>
 </body>
 </html>
