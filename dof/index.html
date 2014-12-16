@@ -9,6 +9,11 @@
       background: aliceblue;
     }
 
+    canvas {
+      width: 1000px;
+      height: 200px;
+    }
+
     [data-v="H"] {color: blue;}
     [data-v="s"] {color: green;}
     [data-v="f"] {color: magenta;}
@@ -56,7 +61,10 @@
       &Delta;D = D<sub>far</sub> - D<sub>near</sub> = <span data-v="Df"></span> - <span data-v="Dn"></span> = <strong><span data-v="dD"></span>mm</strong>
     </p>
   </div>
+  <canvas width="1000" height="200"></canvas>
   <script>
+    var canvas = document.querySelector('canvas');
+
     var inputs = {
       f: document.querySelector('[name="f"]'),
       s: document.querySelector('[name="s"]'),
@@ -101,6 +109,28 @@
       plugInValue('s', s);
       plugInValue('c', c);
       plugInValue('dD', Math.round(100*dD)/100);
+
+      var ctx = canvas.getContext('2d');
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.2);';
+      ctx.fillRect(Dn, 0, Df-Dn, canvas.height);
+
+      ctx.beginPath();
+      ctx.moveTo(Dn, 0);
+      ctx.lineTo(Dn, canvas.height);
+      ctx.closePath();
+
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(Df, 0);
+      ctx.lineTo(Df, canvas.height);
+      ctx.closePath();
+
+      ctx.stroke();
+
     }
 
     setInterval(function () {
