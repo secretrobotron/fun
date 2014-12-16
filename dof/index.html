@@ -49,6 +49,9 @@
       N = 2<sup>i/2</sup> = 2<sup><span data-v="i"></span>/2</sup> = <span data-v="N"></span>
     </p>
     <p>
+      P = f / i = <span data-v="f"></span> / <span data-v="i"></span> = <span data-v="P"></span>mm
+    </p>
+    <p>
       H = f<sup>2</sup> / Nc + f = <span data-v="f"></span><sup>2</sup> / <span data-v="N"></span> &middot; <span data-v="c"></span> + <span data-v="f"></span> = <span data-v="H"></span>
     </p>
     <p>
@@ -90,29 +93,29 @@
       });
     }
 
-    function populate () {
-      var f = inputs.f.value;
-      var i = inputs.i.value;
-      var s = inputs.s.value;
-      var c = inputs.c.value;
-      var N = Math.pow(2,i/2);
-      var H = calculateH(f, N, c);
-      var Dn = calculateDNear(s, H, f);
-      var Df = calculateDFar(s, H, f);
-      var dD = Df - Dn;
-      plugInValue('f', Math.round(10*f)/10);
-      plugInValue('i', i);
-      plugInValue('N', Math.round(10*N)/10);
-      plugInValue('H', Math.round(10*H)/10);
-      plugInValue('Dn', Math.round(100*Dn)/100);
-      plugInValue('Df', Math.round(100*Df)/100);
-      plugInValue('s', s);
-      plugInValue('c', c);
-      plugInValue('dD', Math.round(100*dD)/100);
-
+    function drawApertureRect (P, f) {
       var ctx = canvas.getContext('2d');
 
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.2);';
+      ctx.fillRect(0, canvas.height/2 - P/2, f, P);
+
+      ctx.beginPath();
+      ctx.moveTo(0, canvas.height/2 - P/2);
+      ctx.lineTo(f, canvas.height/2 - P/2);
+      ctx.closePath();
+
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(0, canvas.height/2 + P/2);
+      ctx.lineTo(f, canvas.height/2 + P/2);
+      ctx.closePath();
+
+      ctx.stroke();
+    }
+
+    function drawDoFRect (Df, Dn) {
+      var ctx = canvas.getContext('2d');
 
       ctx.fillStyle = 'rgba(0, 0, 0, 0.2);';
       ctx.fillRect(Dn, 0, Df-Dn, canvas.height);
@@ -129,8 +132,37 @@
       ctx.lineTo(Df, canvas.height);
       ctx.closePath();
 
-      ctx.stroke();
+      ctx.stroke();    }
 
+    function populate () {
+      var f = inputs.f.value;
+      var i = inputs.i.value;
+      var s = inputs.s.value;
+      var c = inputs.c.value;
+      var N = Math.pow(2,i/2);
+      var H = calculateH(f, N, c);
+      var Dn = calculateDNear(s, H, f);
+      var Df = calculateDFar(s, H, f);
+      var dD = Df - Dn;
+
+      var P = f/i;
+
+      plugInValue('f', Math.round(10*f)/10);
+      plugInValue('i', i);
+      plugInValue('N', Math.round(10*N)/10);
+      plugInValue('H', Math.round(10*H)/10);
+      plugInValue('Dn', Math.round(100*Dn)/100);
+      plugInValue('Df', Math.round(100*Df)/100);
+      plugInValue('s', s);
+      plugInValue('c', c);
+      plugInValue('dD', Math.round(100*dD)/100);
+      plugInValue('P', Math.round(100*P)/100);
+
+      var ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      drawDoFRect(Df, Dn);
+      drawApertureRect(P, f);
     }
 
     setInterval(function () {
