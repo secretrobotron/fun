@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Depth of Field Visualization</title>
+  <style>
+    body {
+      font: 14pt helvetica;
+      background: aliceblue;
+    }
+
+    [data-v="H"] {color: blue;}
+    [data-v="s"] {color: green;}
+    [data-v="f"] {color: magenta;}
+    [data-v="c"] {color: red;}
+    [data-v="N"] {color: gold;}
+  </style>
+</head>
+<body>
+  <div>
+    <p>
+      <label for="f">Focal Length</label>
+      <input name="f" type="range" max="100" min="1" value="25" step="1">
+      <span data-v="f"></span>mm
+    </p>
+    <p>
+      <label for="i">Aperture (F-Stop)</label>
+      <input name="i" type="range" max="10" min="1" value="3" step="1">
+      <span data-v="i"></span> &rArr; (f/<span data-v="N"></span>)
+    </p>
+    <p>
+      <label for="s">Focus Distance</label>
+      <input name="s" type="range" max="500" min="20" value="100" step="1">
+      <span data-v="s"></span>mm
+    </p>
+    <p>
+      <label for="c">Circle of Confusion</label>
+      <input name="c" type="range" max="1" min="0.254" value="0.254" step="0.01">
+      <span data-v="c"></span>mm
+    </p>
+  </div>
+  <div>
+    <p>
+      N = 2<sup>i/2</sup> = 2<sup><span data-v="i"></span>/2</sup> = <span data-v="N"></span>
+    </p>
+    <p>
+      H = f<sup>2</sup> / Nc + f = <span data-v="f"></span><sup>2</sup> / <span data-v="N"></span> &middot; <span data-v="c"></span> + <span data-v="f"></span> = <span data-v="H"></span>
+    </p>
+    <p>
+      D<sub>near</sub> = s(H - f)/(H + s - 2f) = <span data-v="s"></span>(<span data-v="H"></span> - <span data-v="f"></span>)/(<span data-v="H"></span> + <span data-v="s"></span> - 2 &middot; <span data-v="f"></span>) = <strong><span data-v="Dn"></span>mm</strong>
+    </p>
+    <p>
+      D<sub>far</sub> = s(H - f)/(H - s) = <span data-v="s"></span>(<span data-v="H"></span> - <span data-v="f"></span>)/(<span data-v="H"></span> - <span data-v="s"></span>) = <strong><span data-v="Df"></span>mm</strong>
+    </p>
+    <p>
+      &Delta;D = D<sub>far</sub> - D<sub>near</sub> = <span data-v="Df"></span> - <span data-v="Dn"></span> = <strong><span data-v="dD"></span>mm</strong>
+    </p>
+  </div>
+  <script>
+    var inputs = {
+      f: document.querySelector('[name="f"]'),
+      s: document.querySelector('[name="s"]'),
+      i: document.querySelector('[name="i"]'),
+      c: document.querySelector('[name="c"]')
+    }
+
+    function calculateH (f, N, c) {
+      return (f*f)/(N*c) + f;
+    }
+
+    function calculateDNear (s, H, f) {
+      return (s * (H - f)) /  (H + s - 2 * f);
+    }
+
+    function calculateDFar (s, H, f) {
+      return (s * (H - f)) /  (H - s);
+    }
+
+    function plugInValue (name, value) {
+      Array.prototype.forEach.call(document.querySelectorAll('[data-v="' + name + '"]'), function (e) {
+        e.textContent = value;
+      });
+    }
+
+    function populate () {
+      var f = inputs.f.value;
+      var i = inputs.i.value;
+      var s = inputs.s.value;
+      var c = inputs.c.value;
+      var N = Math.pow(2,i/2);
+      var H = calculateH(f, N, c);
+      var Dn = calculateDNear(s, H, f);
+      var Df = calculateDFar(s, H, f);
+      var dD = Df - Dn;
+      plugInValue('f', Math.round(10*f)/10);
+      plugInValue('i', i);
+      plugInValue('N', Math.round(10*N)/10);
+      plugInValue('H', Math.round(10*H)/10);
+      plugInValue('Dn', Math.round(100*Dn)/100);
+      plugInValue('Df', Math.round(100*Df)/100);
+      plugInValue('s', s);
+      plugInValue('c', c);
+      plugInValue('dD', Math.round(100*dD)/100);
+    }
+
+    setInterval(function () {
+      populate();
+    }, 50);
+
+    populate();
+  </script>
+</body>
+</html>
