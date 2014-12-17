@@ -19,6 +19,72 @@
     [data-v="f"] {color: magenta;}
     [data-v="c"] {color: red;}
     [data-v="N"] {color: gold;}
+
+    .math {
+      position: relative;
+      line-height: 1em;
+      text-align: middle;
+    }
+
+    .fraction {
+      position: relative;
+      min-width: 1em;
+      height: 2.5em;
+    }
+
+    .fraction, .fraction div {
+      display: inline-block;
+      position: relative;
+    }
+
+    .fraction, .fraction div:nth-child(1) {
+      top: .15em;
+    }
+
+    .fraction, .fraction div:nth-child(2) {
+      top: .25em;
+    }
+
+    .fraction div {
+      display: block;
+      text-align: center;
+    }
+    .fraction div:nth-child(1) {
+      border-bottom: 1px solid #000;
+    }
+
+    .exponent.fraction {
+      line-height: 1em;
+    }
+
+    .exponent.fraction div:nth-child(1) {
+      border-bottom: none;
+      display: inline-block;
+      position: relative;
+      top: 0;
+      padding: 0 0 0 .15em;
+    }
+    .exponent.fraction div:nth-child(1):after {
+      content: '/';
+      position: relative;
+      top: .15em;
+      padding: 0 .25em;
+    }
+
+    .exponent.fraction div:nth-child(2) {
+      border-bottom: none;
+      display: inline-block;
+      position: relative;
+      top: .25em;
+    }
+
+    .exponent {
+      display: inline-block;
+      font-size: .65em;
+      position: relative;
+      vertical-align: top;
+      top: -.5em;
+    }
   </style>
 </head>
 <body>
@@ -26,7 +92,7 @@
     <h3>Settings</h3>
     <p>
       <label for="f">Focal Length</label>
-      <input name="f" type="range" max="100" min="1" value="25" step="1">
+      <input name="f" type="range" max="100" min="1" value="22" step="1">
       <span data-v="f"></span>mm
     </p>
     <p>
@@ -36,7 +102,7 @@
     </p>
     <p>
       <label for="s">Focus Distance</label>
-      <input name="s" type="range" max="500" min="20" value="100" step="1">
+      <input name="s" type="range" max="500" min="20" value="150" step="1">
       <span data-v="s"></span>mm
     </p>
     <p>
@@ -47,12 +113,12 @@
   </div>
   <div>
     <h3>Maths</h3>
-    <p>
-      N = 2<sup>i/2</sup> = 2<sup><span data-v="i"></span>/2</sup> = <span data-v="N"></span>
-    </p>
-    <p>
-      P = f / i = <span data-v="f"></span> / <span data-v="i"></span> = <span data-v="P"></span>mm
-    </p>
+    <div class="math">
+      N = 2<div class="fraction exponent"><div>i</div><div>2</div></div> = 2<div class="fraction exponent"><div data-v="i"></div><div>2</div></div> = <span data-v="N"></span>
+    </div>
+    <div class="math">
+      P = <div class="fraction"><div>f</div><div>i</div></div> = <div class="fraction"><div data-v="f"></div><div data-v="i"></div></div> = <span data-v="P"></span>mm
+    </div>
     <p>
       H = f<sup>2</sup> / Nc + f = <span data-v="f"></span><sup>2</sup> / <span data-v="N"></span> &middot; <span data-v="c"></span> + <span data-v="f"></span> = <span data-v="H"></span>
     </p>
@@ -65,12 +131,17 @@
     <p>
       &Delta;D = D<sub>far</sub> - D<sub>near</sub> = <span data-v="Df"></span> - <span data-v="Dn"></span> = <strong><span data-v="dD"></span>mm</strong>
     </p>
+    <!--<p>
+      DOF = (2Ncf<sup>2</sup>s<sup>2</sup>)/(f<sup>4</sup>-N<sup>2</sup>c<sup>2</sup>s<sup>2</sup>) = <span data-v="DOF"></span>
+    </p>-->
   </div>
   <div>
     <h3>Visualization</h3>
     <canvas width="1000" height="200"></canvas>
   </div>
   <script>
+    var INFINITY = 1000000000;
+
     var canvas = document.querySelector('canvas');
 
     var inputs = {
@@ -80,24 +151,31 @@
       c: document.querySelector('[name="c"]')
     }
 
+    function calculateDOF (f, N, c, s) {
+      return (2*N*c*f*f*s*s)/(f*f*f*f-N*N*c*c*s*s);
+    }
+
     function calculateH (f, N, c) {
-      return (f*f)/(N*c);
+      return (f*f)/(N*c) + f;
     }
 
     function calculateDNear (s, H, f) {
+      if (s >= H) {
+        return H/2;
+      }
       return (s * (H - f)) /  (H + s - 2 * f);
     }
 
     function calculateDFar (s, H, f) {
       if (s >= H) {
-        console.log('warning: s >= H');
+        return INFINITY;
       }
       return (s * (H - f)) /  (H - s);
     }
 
     function plugInValue (name, value) {
       Array.prototype.forEach.call(document.querySelectorAll('[data-v="' + name + '"]'), function (e) {
-        e.textContent = value;
+        e.innerHTML = value < INFINITY / 100 ? value : '&infin;';
       });
     }
 
@@ -154,6 +232,8 @@
       var Df = calculateDFar(s, H, f);
       var dD = Df - Dn;
 
+      var DOF = calculateDOF(f, N, c, s);
+
       var P = f/i;
 
       plugInValue('f', Math.round(10*f)/10);
@@ -166,6 +246,7 @@
       plugInValue('c', c);
       plugInValue('dD', Math.round(100*dD)/100);
       plugInValue('P', Math.round(100*P)/100);
+      plugInValue('DOF', Math.round(100*DOF)/100);
 
       var ctx = canvas.getContext('2d');
       ctx.clearRect(0, 0, canvas.width, canvas.height);
