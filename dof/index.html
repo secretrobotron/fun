@@ -53,6 +53,14 @@
       border-bottom: 1px solid #000;
     }
 
+    .fraction > div > .exponent {
+      display: inline-block;
+      top: auto;
+      border: none;
+      top: -.5em;
+      padding: 0 0 0 .15em;
+    }
+
     .exponent.fraction {
       line-height: 1em;
     }
@@ -119,12 +127,16 @@
     <div class="math">
       P = <div class="fraction"><div>f</div><div>i</div></div> = <div class="fraction"><div data-v="f"></div><div data-v="i"></div></div> = <span data-v="P"></span>mm
     </div>
-    <p>
-      H = f<sup>2</sup> / Nc + f = <span data-v="f"></span><sup>2</sup> / <span data-v="N"></span> &middot; <span data-v="c"></span> + <span data-v="f"></span> = <span data-v="H"></span>
-    </p>
-    <p>
-      D<sub>near</sub> = s(H - f)/(H + s - 2f) = <span data-v="s"></span>(<span data-v="H"></span> - <span data-v="f"></span>)/(<span data-v="H"></span> + <span data-v="s"></span> - 2 &middot; <span data-v="f"></span>) = <strong><span data-v="Dn"></span>mm</strong>
-    </p>
+    <div class="math">
+      H = <div class="fraction"><div>f<div class="exponent">2</div></div><div>Nc</div></div> + f
+      = <div class="fraction"><div><span data-v="f"></span><div class="exponent">2</div></div><div><span data-v="N"></span> &middot; <span data-v="c"></span></div></div> + <span data-v="f"></span>
+      = <span data-v="H"></span>
+    </div>
+    <div class="math">
+      D<sub>near</sub> = <div class="fraction"><div>s(H - f)</div><div>(H + s - 2f)</div></div>
+      = <div class="fraction"><div><span data-v="s"></span>(<span data-v="H"></span> - <span data-v="f"></span>)</div><div>(<span data-v="H"></span> + <span data-v="s"></span> - 2 &middot; <span data-v="f"></span>)</div></div>
+      = <strong><span data-v="Dn"></span>mm</strong>
+    </div>
     <p>
       D<sub>far</sub> = s(H - f)/(H - s) = <span data-v="s"></span>(<span data-v="H"></span> - <span data-v="f"></span>)/(<span data-v="H"></span> - <span data-v="s"></span>) = <strong><span data-v="Df"></span>mm</strong>
     </p>
