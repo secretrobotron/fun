@@ -9,9 +9,24 @@
       background: aliceblue;
     }
 
+    .right {
+      float: right;
+    }
+
+    .left {
+      float: left;
+    }
+
+    .references {
+      clear: both;
+    }
+
     canvas {
-      width: 1000px;
+      width: 900px;
       height: 200px;
+      background: rgba(255, 255, 255, 1.0);
+      box-shadow: 0 10px 15px #000;
+      border: 1px solid #000;
     }
 
     [data-v="H"] {color: blue;}
@@ -24,6 +39,7 @@
       position: relative;
       line-height: 1em;
       text-align: middle;
+      padding: .25em 0;
     }
 
     .fraction {
@@ -37,12 +53,18 @@
       position: relative;
     }
 
-    .fraction, .fraction div:nth-child(1) {
-      top: .15em;
+    .fraction {
+      top: .25em;
     }
 
-    .fraction, .fraction div:nth-child(2) {
+    .fraction div:nth-child(1) {
+      top: .15em;
+      padding-bottom: .15em;
+    }
+
+    .fraction div:nth-child(2) {
       top: .25em;
+      padding-top: .15em;
     }
 
     .fraction div {
@@ -96,60 +118,75 @@
   </style>
 </head>
 <body>
-  <div>
-    <h3>Settings</h3>
-    <p>
-      <label for="f">Focal Length</label>
-      <input name="f" type="range" max="100" min="1" value="22" step="1">
-      <span data-v="f"></span>mm
-    </p>
-    <p>
-      <label for="i">Aperture (F-Stop)</label>
-      <input name="i" type="range" max="10" min="1" value="3" step="1">
-      <span data-v="i"></span> &rArr; (f/<span data-v="N"></span>)
-    </p>
-    <p>
-      <label for="s">Focus Distance</label>
-      <input name="s" type="range" max="500" min="20" value="150" step="1">
-      <span data-v="s"></span>mm
-    </p>
-    <p>
-      <label for="c">Circle of Confusion</label>
-      <input name="c" type="range" max="1" min="0.254" value="0.254" step="0.01">
-      <span data-v="c"></span>mm
-    </p>
+  <div class="left">
+    <div class="settings">
+      <h3>Settings</h3>
+      <p>
+        <label for="f">Focal Length</label>
+        <input name="f" type="range" max="100" min="1" value="22" step="1">
+        <span data-v="f"></span>mm
+      </p>
+      <p>
+        <label for="i">Aperture (F-Stop)</label>
+        <input name="i" type="range" max="10" min="1" value="3" step="1">
+        <span data-v="i"></span> &rArr; (f/<span data-v="N"></span>)
+      </p>
+      <p>
+        <label for="s">Focus Distance</label>
+        <input name="s" type="range" max="500" min="20" value="150" step="1">
+        <span data-v="s"></span>mm
+      </p>
+      <p>
+        <label for="c">Circle of Confusion</label>
+        <input name="c" type="range" max="1" min="0.254" value="0.254" step="0.01">
+        <span data-v="c"></span>mm
+      </p>
+    </div>
+    <div class="maths">
+      <h3>Maths</h3>
+      <div class="math">
+        N = 2<div class="fraction exponent"><div>i</div><div>2</div></div> = 2<div class="fraction exponent"><div data-v="i"></div><div>2</div></div> = <span data-v="N"></span>
+      </div>
+      <div class="math">
+        P = <div class="fraction"><div>f</div><div>i</div></div> = <div class="fraction"><div data-v="f"></div><div data-v="i"></div></div> = <span data-v="P"></span>mm
+      </div>
+      <div class="math">
+        H = <div class="fraction"><div>f<div class="exponent">2</div></div><div>Nc</div></div> + f
+        = <div class="fraction"><div><span data-v="f"></span><div class="exponent">2</div></div><div><span data-v="N"></span> &middot; <span data-v="c"></span></div></div> + <span data-v="f"></span>
+        = <span data-v="H"></span>
+      </div>
+      <div class="math">
+        D<sub>near</sub> = <div class="fraction"><div>s(H - f)</div><div>(H + s - 2f)</div></div>
+        = <div class="fraction"><div><span data-v="s"></span>(<span data-v="H"></span> - <span data-v="f"></span>)</div><div>(<span data-v="H"></span> + <span data-v="s"></span> - 2 &middot; <span data-v="f"></span>)</div></div>
+        = <strong><span data-v="Dn"></span>mm</strong>
+      </div>
+      <div class="math">
+        D<sub>far</sub> = <div class="fraction"><div>s(H - f)</div><div>(H - s)</div></div>
+        = <div class="fraction"><div><span data-v="s"></span>(<span data-v="H"></span> - <span data-v="f"></span>)</div><div>(<span data-v="H"></span> - <span data-v="s"></span>)</div></div>
+        = <strong><span data-v="Df"></span>mm</strong>
+      </div>
+      <p>
+        &Delta;D = D<sub>far</sub> - D<sub>near</sub> = <span data-v="Df"></span> - <span data-v="Dn"></span> = <strong><span data-v="dD"></span>mm</strong>
+      </p>
+      <!--<p>
+        DOF = (2Ncf<sup>2</sup>s<sup>2</sup>)/(f<sup>4</sup>-N<sup>2</sup>c<sup>2</sup>s<sup>2</sup>) = <span data-v="DOF"></span>
+      </p>-->
+    </div>
   </div>
-  <div>
-    <h3>Maths</h3>
-    <div class="math">
-      N = 2<div class="fraction exponent"><div>i</div><div>2</div></div> = 2<div class="fraction exponent"><div data-v="i"></div><div>2</div></div> = <span data-v="N"></span>
+  <div class="right">
+    <div class="visualization">
+      <h3>Visualization</h3>
+      <canvas width="900" height="200"></canvas>
     </div>
-    <div class="math">
-      P = <div class="fraction"><div>f</div><div>i</div></div> = <div class="fraction"><div data-v="f"></div><div data-v="i"></div></div> = <span data-v="P"></span>mm
-    </div>
-    <div class="math">
-      H = <div class="fraction"><div>f<div class="exponent">2</div></div><div>Nc</div></div> + f
-      = <div class="fraction"><div><span data-v="f"></span><div class="exponent">2</div></div><div><span data-v="N"></span> &middot; <span data-v="c"></span></div></div> + <span data-v="f"></span>
-      = <span data-v="H"></span>
-    </div>
-    <div class="math">
-      D<sub>near</sub> = <div class="fraction"><div>s(H - f)</div><div>(H + s - 2f)</div></div>
-      = <div class="fraction"><div><span data-v="s"></span>(<span data-v="H"></span> - <span data-v="f"></span>)</div><div>(<span data-v="H"></span> + <span data-v="s"></span> - 2 &middot; <span data-v="f"></span>)</div></div>
-      = <strong><span data-v="Dn"></span>mm</strong>
-    </div>
-    <p>
-      D<sub>far</sub> = s(H - f)/(H - s) = <span data-v="s"></span>(<span data-v="H"></span> - <span data-v="f"></span>)/(<span data-v="H"></span> - <span data-v="s"></span>) = <strong><span data-v="Df"></span>mm</strong>
-    </p>
-    <p>
-      &Delta;D = D<sub>far</sub> - D<sub>near</sub> = <span data-v="Df"></span> - <span data-v="Dn"></span> = <strong><span data-v="dD"></span>mm</strong>
-    </p>
-    <!--<p>
-      DOF = (2Ncf<sup>2</sup>s<sup>2</sup>)/(f<sup>4</sup>-N<sup>2</sup>c<sup>2</sup>s<sup>2</sup>) = <span data-v="DOF"></span>
-    </p>-->
   </div>
-  <div>
-    <h3>Visualization</h3>
-    <canvas width="1000" height="200"></canvas>
+  <div class="references">
+    <h5>References</h5>
+    <ol>
+      <li><em><a href="http://www.cambridgeincolour.com/tutorials/depth-of-field.htm">Depth of Field Tutorial</a></em></li>
+      <li><em><a href="http://en.wikipedia.org/wiki/Depth_of_field">Depth of Field (Wikipedia)</a></em></li>
+      <li><em><a href="http://www.dofmaster.com/equations.html">Depth of Field Equations</a></em></li>
+      <li><em><a href="http://en.wikipedia.org/wiki/F-number">F-number (Wikipedia)</a></em></li>
+    </ol>
   </div>
   <script>
     var INFINITY = 1000000000;
@@ -274,14 +311,5 @@
 
     populate();
   </script>
-  <div>
-    <h5>References</h5>
-    <ol>
-      <li><em><a href="http://www.cambridgeincolour.com/tutorials/depth-of-field.htm">Depth of Field Tutorial</a></em></li>
-      <li><em><a href="http://en.wikipedia.org/wiki/Depth_of_field">Depth of Field (Wikipedia)</a></em></li>
-      <li><em><a href="http://www.dofmaster.com/equations.html">Depth of Field Equations</a></em></li>
-      <li><em><a href="http://en.wikipedia.org/wiki/F-number">F-number (Wikipedia)</a></em></li>
-    </ol>
-  </div>
 </body>
 </html>
