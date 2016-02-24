@@ -130,6 +130,15 @@
           return flowerDiv;
         }
 
+        var maxRadius = 500;
+        var minRadius = 10;
+
+        var frequencies = [
+          16.35,              // C
+          20.60,              // E
+          24.50               // G
+        ];
+
         var mouseDirty = false;
         var mousePosition = [0, 0];
 
@@ -139,15 +148,39 @@
           mousePosition[1] = e.clientY;
         });
 
+        var context = new AudioContext;
+
         setInterval(function () {
           if (mouseDirty) {
-            var flower = makeFlower(Math.random() * 500 + 10, Math.round(Math.random()*10) + 4);
+            var radius = Math.random() * (maxRadius - minRadius) + minRadius;
+            var numPetals = Math.round(Math.random()*10) + 4;
+            var flower = makeFlower(radius, numPetals);
+
             flower.style.left = mousePosition[0] + 'px';
             flower.style.top = mousePosition[1] + 'px';
+
             document.body.appendChild(flower);
+
+            var oscillator = context.createOscillator();
+            var gainNode = context.createGain();
+            gainNode.connect(context.destination);
+            gainNode.gain.value = 1;
+
+            var octaveShift = Math.pow(2, 4 - Math.round(radius/(maxRadius-minRadius)*4) + 1);
+            var baseFrequency = frequencies[Math.floor(Math.random() * frequencies.length)];
+
+            oscillator.frequency.value = baseFrequency * octaveShift;
+            oscillator.connect(gainNode);
+            oscillator.start(0);
+
+            var gainInterval = setInterval(function () {
+              gainNode.gain.value = Math.max(0, gainNode.gain.value - 0.05);
+            }, 10);
 
             setTimeout(function () {
               document.body.removeChild(flower);
+              oscillator.stop();
+              clearInterval(gainInterval);
             }, 2000);
 
             mouseDirty = false;
