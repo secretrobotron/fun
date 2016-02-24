@@ -21,7 +21,6 @@
         left: 300px;
         animation: fadeout 2s ease-in, popin 0.5s ease-in-out;
         animation-duration: 1s, 0.3s;
-        animation-delay: 0.3s, 0;
         animation-fill-mode: forwards, forwards;
       }
 
@@ -133,11 +132,20 @@
         var maxRadius = 500;
         var minRadius = 10;
 
-        var frequencies = [
-          16.35,              // C
-          20.60,              // E
-          24.50               // G
+        var chords = [
+          [
+            16.35,              // C
+            20.60,              // E
+            24.50               // G
+          ],
+          [
+            21.83,              // F
+            27.50,              // A
+            32.70               // C
+          ]
         ];
+
+        var frequencies = chords[0];
 
         var mouseDirty = false;
         var mousePosition = [0, 0];
@@ -169,7 +177,7 @@
             var octaveShift = Math.pow(2, 4 - Math.round(radius/(maxRadius-minRadius)*4) + 1);
             var baseFrequency = frequencies[Math.floor(Math.random() * frequencies.length)];
 
-            oscillator.frequency.value = baseFrequency * octaveShift;
+            oscillator.frequency.value = baseFrequency * 8;
             oscillator.connect(gainNode);
             oscillator.start(0);
 
@@ -186,6 +194,10 @@
             mouseDirty = false;
           }
         }, 100);
+
+        setInterval(function () {
+          frequencies = chords[(chords.indexOf(frequencies) + 1) % chords.length];
+        }, 3000);
 
         // var flower = makeFlower(Math.random() * 500 + 100, Math.round(Math.random()*10) + 4);
         // flower.style.left = 300 + 'px';
