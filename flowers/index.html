@@ -134,76 +134,127 @@
 
         var chords = [
           [
+            11.75,              // G
             16.35,              // C
             20.60,              // E
-            24.50               // G
+            24.50,              // G
+            32.70,              // C
+            41.20               // E
           ],
           [
+            16.35,              // C
             21.83,              // F
             27.50,              // A
-            32.70               // C
+            32.70,              // C
+            43.66,              // F
+            55.00,              // A
           ]
         ];
 
         var frequencies = chords[0];
 
         var mouseDirty = false;
-        var mousePosition = [0, 0];
+        var oldMousePosition = [0, 0];
+
+        var audioContext = new AudioContext;
+
+        var mouseMoveMagnitude;
+        var flowerDelay = 0;
+        var flowerCount = 0;
+        var frequencyIndex = 0;
+        var chordCount = 0;
+        var nextFlowerTime = 1000;
+
+        function makeNextFlower () {
+          var radius = Math.random() * (maxRadius - minRadius) + minRadius;
+          var numPetals = Math.round(Math.random()*10) + 4;
+
+          var flower = makeFlower(radius, numPetals);
+
+          flower.style.left = oldMousePosition[0] + 'px';
+          flower.style.top = oldMousePosition[1] + 'px';
+
+          document.body.appendChild(flower);
+
+          var oscillator = audioContext.createOscillator();
+          var gainNode = audioContext.createGain();
+          gainNode.connect(audioContext.destination);
+          gainNode.gain.value = 1;
+
+          var octaveShift = Math.pow(2, 4 - Math.round(radius/(maxRadius-minRadius)*4) + 1);
+          var baseFrequency = frequencies[frequencyIndex];
+
+          ++frequencyIndex;
+
+          if (frequencyIndex === frequencies.length) {
+            frequencyIndex = 0;
+            ++chordCount;
+          }
+
+          if (chordCount > 4) {
+            frequencies = chords[(chords.indexOf(frequencies) + 1) % chords.length];
+            chordCount = 0;
+          }
+
+          oscillator.frequency.value = baseFrequency * 8;
+          oscillator.connect(gainNode);
+          oscillator.start(0);
+
+          var gainInterval = setInterval(function () {
+            gainNode.gain.value = Math.max(0, gainNode.gain.value - 0.05);
+          }, 10);
+
+          setTimeout(function () {
+            document.body.removeChild(flower);
+            oscillator.stop();
+            clearInterval(gainInterval);
+          }, 2000);
+        }
+
+        var distance = 0;
 
         document.addEventListener('mousemove', function (e) {
-          mouseDirty = true;
-          mousePosition[0] = e.clientX
-          mousePosition[1] = e.clientY;
+          var newMousePosition = [e.clientX, e.clientY];
+          var mousePositionDifference = [newMousePosition[0] - oldMousePosition[0], newMousePosition[1] - oldMousePosition[1]];
+
+          mouseMoveMagnitude = Math.sqrt(mousePositionDifference[0]*mousePositionDifference[0]+mousePositionDifference[1]*mousePositionDifference[1]);
+
+          nextFlowerTime = 200 / mouseMoveMagnitude;
+          distance += mouseMoveMagnitude;
+          distance = Math.min(600, distance);
+
+          flowerCount += Math.round(mouseMoveMagnitude / 10);
+
+          flowerDelay = Math.min(1000, flowerDelay + mouseMoveMagnitude);
+
+          oldMousePosition[0] = newMousePosition[0];
+          oldMousePosition[1] = newMousePosition[1];
         });
 
-        var context = new AudioContext;
+        var lastTime = Date.now();
+        var mainLoopInterval = setInterval(function () {
+          var time = Date.now();
 
-        setInterval(function () {
-          if (mouseDirty) {
-            var radius = Math.random() * (maxRadius - minRadius) + minRadius;
-            var numPetals = Math.round(Math.random()*10) + 4;
-            var flower = makeFlower(radius, numPetals);
+          console.log(nextFlowerTime);
 
-            flower.style.left = mousePosition[0] + 'px';
-            flower.style.top = mousePosition[1] + 'px';
+          // if (time - lastTime > nextFlowerTime) {
+          //   makeNextFlower();
+          //   nextFlowerTime = 1000;
+          // }
 
-            document.body.appendChild(flower);
-
-            var oscillator = context.createOscillator();
-            var gainNode = context.createGain();
-            gainNode.connect(context.destination);
-            gainNode.gain.value = 1;
-
-            var octaveShift = Math.pow(2, 4 - Math.round(radius/(maxRadius-minRadius)*4) + 1);
-            var baseFrequency = frequencies[Math.floor(Math.random() * frequencies.length)];
-
-            oscillator.frequency.value = baseFrequency * 8;
-            oscillator.connect(gainNode);
-            oscillator.start(0);
-
-            var gainInterval = setInterval(function () {
-              gainNode.gain.value = Math.max(0, gainNode.gain.value - 0.05);
-            }, 10);
-
-            setTimeout(function () {
-              document.body.removeChild(flower);
-              oscillator.stop();
-              clearInterval(gainInterval);
-            }, 2000);
-
-            mouseDirty = false;
+          if (distance > 200) {
+            distance -= 200;
+            makeNextFlower();
           }
+
+          lastTime = time;
         }, 100);
 
-        setInterval(function () {
-          frequencies = chords[(chords.indexOf(frequencies) + 1) % chords.length];
-        }, 3000);
-
-        // var flower = makeFlower(Math.random() * 500 + 100, Math.round(Math.random()*10) + 4);
-        // flower.style.left = 300 + 'px';
-        // flower.style.top = 300 + 'px';
-        // document.body.appendChild(flower);
-
+        document.addEventListener('keydown', function (e) {
+          if (e.keyCode === 27) {
+            clearInterval(mainLoopInterval);
+          }
+        });
       })();
     </script>
 	</body>
