@@ -159,11 +159,10 @@
         var audioContext = new AudioContext;
 
         var mouseMoveMagnitude;
-        var flowerDelay = 0;
-        var flowerCount = 0;
         var frequencyIndex = 0;
         var chordCount = 0;
-        var nextFlowerTime = 1000;
+        var distance = 0;
+
 
         function makeNextFlower () {
           var radius = Math.random() * (maxRadius - minRadius) + minRadius;
@@ -211,8 +210,6 @@
           }, 2000);
         }
 
-        var distance = 0;
-
         document.addEventListener('mousemove', function (e) {
           var newMousePosition = [e.clientX, e.clientY];
           var mousePositionDifference = [newMousePosition[0] - oldMousePosition[0], newMousePosition[1] - oldMousePosition[1]];
@@ -223,31 +220,15 @@
           distance += mouseMoveMagnitude;
           distance = Math.min(600, distance);
 
-          flowerCount += Math.round(mouseMoveMagnitude / 10);
-
-          flowerDelay = Math.min(1000, flowerDelay + mouseMoveMagnitude);
-
           oldMousePosition[0] = newMousePosition[0];
           oldMousePosition[1] = newMousePosition[1];
         });
 
-        var lastTime = Date.now();
         var mainLoopInterval = setInterval(function () {
-          var time = Date.now();
-
-          console.log(nextFlowerTime);
-
-          // if (time - lastTime > nextFlowerTime) {
-          //   makeNextFlower();
-          //   nextFlowerTime = 1000;
-          // }
-
           if (distance > 200) {
             distance -= 200;
             makeNextFlower();
           }
-
-          lastTime = time;
         }, 100);
 
         document.addEventListener('keydown', function (e) {
