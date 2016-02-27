@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+	<head>
+    <style>
+      html, body { margin: 0; padding: 0; width: 100%; height: 100%; }
+      
+      .flower {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+      }
+
+      .flower .petal {
+        position: absolute;
+        top: 0;
+        left: 0;
+        -webkit-mask-image: url('petal.svg');
+        mask-image: url('petal.svg');
+        -webkit-mask-size: 100% auto;
+        mask-image-size: 100% auto;
+        background-repeat: no-repeat;
+        background-size: 100% auto;
+        transform-origin: bottom center;
+      }
+
+      .flower .center {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+      }
+
+      .flower .pistil {
+        position: absolute;
+        background: gold;
+      }
+
+      .flower .pistil.dotted {
+        background-image: -webkit-repeating-radial-gradient(center center, rgba(0,0,0,.2), rgba(0,0,0,.2) 1px, transparent 1px, transparent 100%);
+        background-image: -moz-repeating-radial-gradient(center center, rgba(0,0,0,.2), rgba(0,0,0,.2) 1px, transparent 1px, transparent 100%);
+        background-image: repeating-radial-gradient(center center, rgba(0,0,0,.2), rgba(0,0,0,.2) 1px, transparent 1px, transparent 100%);
+        background-size: 3px 3px;
+      }
+
+      .flower .pistil.striped {
+        background-image: -webkit-repeating-linear-gradient(135deg, rgba(0,0,0,.3), rgba(0,0,0,.3) 1px, transparent 2px, transparent 2px, rgba(0,0,0,.3) 3px);
+        background-image: -moz-repeating-linear-gradient(135deg, rgba(0,0,0,.3), rgba(0,0,0,.3) 1px, transparent 2px, transparent 2px, rgba(0,0,0,.3) 3px);
+        background-image: repeating-linear-gradient(135deg, rgba(0,0,0,.3), rgba(0,0,0,.3) 1px, transparent 2px, transparent 2px, rgba(0,0,0,.3) 3px);
+        background-size: 4px 4px;
+      }
+
+      .flower .pistil.border1 {
+        border-style: outset;
+        border-color: darkblue;
+      }
+    </style>
+    <script src="dat.gui.min.js"></script>
+    <script src="main.js"></script>
+	</head>
+	<body>
+	</body>
+</html>
