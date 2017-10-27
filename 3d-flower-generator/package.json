@@ -1,0 +1,21 @@
+{
+  "name": "3d-flower-generator",
+  "version": "1.0.0",
+  "description": "A 3D Flower Generator",
+  "main": "index.js",
+  "scripts": {},
+  "keywords": [],
+  "author": "Bobby Richter",
+  "license": "ISC",
+  "devDependencies": {
+    "gulp": "3.9.1",
+    "gulp-autoprefixer": "4.0.0",
+    "gulp-nunjucks-render": "2.2.1",
+    "gulp-plumber": "1.1.0",
+    "gulp-sass": "3.1.0",
+    "html-loader": "0.5.1",
+    "webpack": "3.8.1",
+    "webpack-stream": "4.0.0"
+  },
+  "dependencies": {}
+}
