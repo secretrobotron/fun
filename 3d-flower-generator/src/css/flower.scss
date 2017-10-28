@@ -1,8 +1,15 @@
+@mixin petalShadowBackground($colour) {
+  background: linear-gradient(135deg, darken($colour, 50%) 0%, darken($colour, 10%) 44%, $colour 100%);
+}
+
 .flower-transform {
   transform-style: preserve-3d;
 }
 
 .flower {
+  // Make sure it's centered
+  width: 0;
+
   $flowerXRotation: 75deg;
 
   @keyframes spin {
@@ -31,20 +38,35 @@
     height: 1px;
     transform-style: preserve-3d;
 
-    .petal {
+    .petal-transform {
       position: absolute;
       transform-origin: top left;
       transform-style: preserve-3d;
 
-      .visual {
+      .petal {
         position: absolute;
         width: 150px;
         height: 150px;
-        background: linear-gradient(135deg, #3D0010 0%,#8f0222 44%,#a90329 100%);
         transform-origin: top left;
         transform: translateZ(-40px) rotateX(15deg) rotateY(-15deg);
+
+        &.red {
+          @include petalShadowBackground(#a90329);
+        }
+        &.blue {
+          @include petalShadowBackground(#2903a9);
+        }
+        &.orange {
+          @include petalShadowBackground(#f97d05);
+        }
+        &.pink {
+          @include petalShadowBackground(#d40ba2);
+        }
+
       }
+
     }
+
   }
 
   .ovary {
@@ -52,6 +74,9 @@
 
     width: 100px;
     height: 100px;
+
+    margin-left: -50px;
+
     border-radius: 50px;
 
     transform: translateZ(-26px);
