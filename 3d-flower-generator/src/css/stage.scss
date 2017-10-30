@@ -1,18 +1,34 @@
-#stage {
+$stageSize: 1024px;
 
-  display: flex;
-  
+.stage-container {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  flex-direction: column;
-
+  width: $stageSize;
+  height: $stageSize;
+  top: 50%;
+  left: 50%;
+  margin-left: -$stageSize/2;
+  margin-top: -$stageSize/2;
   transform-style: preserve-3d;
-  perspective: 100%;
+  perspective: $stageSize;
+
+  .stage-transform.translation {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform-style: preserve-3d;
+    transform: translateZ($stageSize/2);
+  }
+
+  .stage-transform.rotation {
+    position: absolute;
+    transform-style: preserve-3d;
+  }
+
+  #stage {
+    position: relative;
+    transform-style: preserve-3d;
+  }
+
 }
+
+

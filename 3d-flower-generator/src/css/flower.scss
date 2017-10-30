@@ -10,17 +10,17 @@
   // Make sure it's centered
   width: 0;
 
+  will-change: transform;
+
   $flowerXRotation: 75deg;
 
   @keyframes spin {
-    from  { transform: rotateX($flowerXRotation) rotateZ(0deg); }
-    to    { transform: rotateX($flowerXRotation) rotateZ(360deg); }
+    from  { transform: rotateZ(0deg); }
+    to    { transform: rotateZ(360deg); }
   }
 
   position: absolute;
   transform-style: preserve-3d;
-
-  transform: rotateX($flowerXRotation);
 
   &.debug {
     .petals {
@@ -28,7 +28,9 @@
     }
   }
 
-  animation: spin 10s linear infinite;
+  &:hover {
+    animation: spin 10s linear infinite;
+  }
 
   .petals {
     position: absolute;
@@ -40,6 +42,7 @@
 
     .petal-transform {
       position: absolute;
+      will-change: transform;
       transform-origin: top left;
       transform-style: preserve-3d;
 
@@ -48,7 +51,7 @@
         width: 150px;
         height: 150px;
         transform-origin: top left;
-        transform: translateZ(-40px) rotateX(15deg) rotateY(-15deg);
+        will-change: transform;
 
         &.red {
           @include petalShadowBackground(#a90329);
@@ -71,6 +74,8 @@
 
   .ovary {
     transform-style: preserve-3d;
+
+    will-change: transform;
 
     width: 100px;
     height: 100px;

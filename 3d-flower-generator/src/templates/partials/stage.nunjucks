@@ -1,5 +1,9 @@
-<div id="stage">
-
-  
-
+<div class="stage-container">
+  <div class="stage-transform translation">
+    <div class="stage-transform rotation">
+      <div id="stage">
+        {% include './skybox.nunjucks' %}
+      </div>
+    </div>
+  </div>
 </div>

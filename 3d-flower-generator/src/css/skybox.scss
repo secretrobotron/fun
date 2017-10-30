@@ -1,0 +1,75 @@
+@mixin skyboxBackgroundImage($className, $urlPrefix) {
+  &.#{$className} {
+    .side.back {
+      background-image: url('#{$urlPrefix}/negz.jpg');
+    }
+    .side.front {
+      background-image: url('#{$urlPrefix}/posz.jpg');
+    }
+    .side.left {
+      background-image: url('#{$urlPrefix}/posx.jpg');
+    }
+    .side.right {
+      background-image: url('#{$urlPrefix}/negx.jpg');
+    }
+    .side.top {
+      background-image: url('#{$urlPrefix}/posy.jpg');
+    }
+    .side.bottom {
+      background-image: url('#{$urlPrefix}/negy.jpg');
+    }
+  }
+}
+
+#skybox {
+  $backgroundSizeX: $stageSize * 2;
+  $backgroundSizeY: $stageSize * 2;
+  $size: $stageSize * 2;
+  $sideOffset: 5px;
+
+  position: absolute;
+  transform-style: preserve-3d;
+
+  @include skyboxBackgroundImage('forest1', 'assets/Brudslojan');
+
+  .side {
+    position: absolute;
+    width: $size;
+    height: $size;
+    margin-top: -$size/2;
+    margin-left: -$size/2;
+
+    transform-origin: 50% 50%;
+    transform-style: preserve-3d;
+
+    background-size: $backgroundSizeX $backgroundSizeY;
+    background-position: 0 0;
+
+    &.top {
+      background-color: red;
+      transform: translateY(-$size/2+$sideOffset) rotateX(-90deg) rotateZ(180deg);
+    }
+    &.bottom {
+      background-color: blue;
+      transform: translateY($size/2-$sideOffset) rotateX(90deg) rotateZ(180deg);
+    }
+    &.left {
+      background-color: green;
+      transform: translateX(-$size/2+$sideOffset) rotateY(90deg);
+    }
+    &.right {
+      background-color: yellow;
+      transform: translateX($size/2-$sideOffset) rotateY(-90deg);
+    }
+    &.back {
+      background-color: orange;
+      transform: translateZ(-$size/2+$sideOffset);
+    }
+    &.front {
+      background-color: purple;
+      transform: translateZ($size/2-$sideOffset) rotateY(180deg);
+    }
+
+  }
+
+}
