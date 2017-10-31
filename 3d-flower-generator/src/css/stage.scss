@@ -29,6 +29,11 @@ $stageSize: 1024px;
     transform-style: preserve-3d;
   }
 
+  cursor: grab;
+
+  &.dragging {
+    cursor: grabbing;
+  }
 }
 
 
